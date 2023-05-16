@@ -1,4 +1,4 @@
-import pygame
+import pygame, random, copy
 
 
 def initialize_game():
