@@ -23,6 +23,7 @@ def initialize_game():
 
     return column_max, row_max, screen_x, screen_y, fps, score_area_width, screen, clock, tetramino, next_tetramino, dx, dy
 
+
 def create_mesh(column_max, row_max, dx, dy):
     mesh = []
     for i in range(column_max):
@@ -76,24 +77,78 @@ def draw_text(screen, font, text, x, y):
     text_rect.topleft = (x, y)
     screen.blit(text_surface, text_rect)
 
+def load_leaderboard():
+    leaderboard = {}
+    try:
+        with open("leaderboard.txt", "r") as file:
+            for line in file:
+                name, score = line.strip().split(",")
+                score = int(score)
+                if name in leaderboard:
+                    if score > leaderboard[name]:
+                        leaderboard[name] = score
+                else:
+                    leaderboard[name] = score
+    except FileNotFoundError:
+        pass
+    return leaderboard
 
-def game_over(screen, score, screen_x, screen_y):
+def save_leaderboard(leaderboard):
+    with open("leaderboard.txt", "w") as file:
+        for name, score in leaderboard.items():
+            file.write(f"{name},{score}\n")
+
+def game_over(screen, score, screen_x, screen_y, player_name):
     screen.fill(pygame.Color("Black"))
+
     gameover_font = pygame.font.Font(None, 40)
     gameover_text = gameover_font.render("Game Over", True, pygame.Color("White"))
     score_text = gameover_font.render(f"Score: {score}", True, pygame.Color("White"))
     gameover_rect = gameover_text.get_rect()
     score_rect = score_text.get_rect()
-    gameover_rect.center = (screen_x // 2 + 100, screen_y // 2 - 25)
-    score_rect.center = (screen_x // 2 + 100, screen_y // 2 + 25)
+    gameover_rect.center = (screen_x // 2 + 100, screen_y // 2 - 250)
+    score_rect.center = (screen_x // 2 + 100, screen_y // 2 - 190)
     screen.blit(gameover_text, gameover_rect)
     screen.blit(score_text, score_rect)
+
+    leaderboard = load_leaderboard()
+    if player_name in leaderboard:
+
+        if score > leaderboard[player_name]:
+            leaderboard[player_name] = score
+    else:
+        leaderboard[player_name] = score
+
+    save_leaderboard(leaderboard)
+
+    leaderboard_font = pygame.font.Font(None, 40)
+    leaderboard_x = screen_x // 2
+    leaderboard_y = screen_y // 2 - 40
+    leaderboard_spacing = 40
+
+    leaderboard_title = leaderboard_font.render("Leaderboard:", True, pygame.Color("White"))
+    leaderboard_title_rect = leaderboard_title.get_rect()
+    leaderboard_title_rect.topleft = (leaderboard_x, leaderboard_y - 50)
+    screen.blit(leaderboard_title, leaderboard_title_rect)
+
+    sorted_leaderboard = sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)
+    for i, (name, score) in enumerate(sorted_leaderboard[:5]):
+        player_rank = i + 1
+        leaderboard_entry = f"{player_rank}. {name}: {score}"
+        leaderboard_entry_text = leaderboard_font.render(leaderboard_entry, True, pygame.Color("White"))
+        leaderboard_entry_rect = leaderboard_entry_text.get_rect()
+        leaderboard_entry_rect.topleft = (leaderboard_x, leaderboard_y + i * leaderboard_spacing)
+        screen.blit(leaderboard_entry_text, leaderboard_entry_rect)
+
     pygame.display.flip()
-    pygame.time.wait(5000)
+    pygame.time.wait(10000)
+
     pygame.display.quit()
 
 
+
 def run_game():
+    player_name = input("Enter your name: ")
     column_max, row_max, screen_x, screen_y, fps, score_area_width, screen, clock, tetramino, next_tetramino, dx,dy = initialize_game()
 
     mesh = create_mesh(column_max, row_max, dx, dy)
@@ -206,6 +261,7 @@ def run_game():
         clock.tick(fps)
 
     if game == False:
-        game_over(screen, score, screen_x, screen_y)
+        game_over(screen, score, screen_x, screen_y, player_name)
 
 run_game()
+
