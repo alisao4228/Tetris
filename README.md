@@ -34,6 +34,6 @@
 На рисунках 1 и 2 представлены скриншоты игры.
 
 ![image](https://github.com/alisao4228/Tetris/assets/133796500/bcf6b2ac-d184-46a6-a69f-c869b38ac6e1)
-![image](https://github.com/alisao4228/Tetris/assets/133796500/b86da78f-e505-4fcb-89e5-dde1a3e2d2ad)
+![image](https://github.com/alisao4228/Tetris/assets/133796500/9c36b244-0956-4165-bfbc-4ef83eb6d8a3)
 
 ㅤㅤㅤㅤㅤРисунок 1 - Игровой процессㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤРисунок 2 - Конец игрового процесса
